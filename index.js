@@ -62,6 +62,7 @@ SonoffTasmotaHTTPLEDAccessory.prototype.getBrightness = function(callback) {
   var that = this
   request("http://" + this.hostname + "/cm?cmnd=Dimmer", function(error, response, body) {
     if (error) return callback(error);
+    that.log(body)
   	var lines = body.split("=");
   	that.log("Sonoff: " + this.hostname + " Get Brightness: " + lines[1].Dimmer);
   	callback(null, lines[1].Dimmer)
@@ -72,10 +73,14 @@ SonoffTasmotaHTTPLEDAccessory.prototype.setBrightness = function(brightness, cal
   var that = this
   request("http://" + this.hostname + "/cm?cmnd=Dimmer%20" + brightness, function(error, response, body) {
     if (error) return callback(error);
+    that.log(body)
   	var lines = body.split("=");
   	that.log("Sonoff: " + this.hostname + " Set Brightness to: " + lines[1].Dimmer);
   	if (lines[1].Dimmer == brightness) callback()
-  	else that.log("Sonoff: " + this.hostname + " ERROR Setting Brightness to: " + brightness);
+  	else { 
+  	  that.log("Sonoff: " + this.hostname + " ERROR Setting Brightness to: " + brightness) 
+  	  callback()
+  	}
   })
 }
 
