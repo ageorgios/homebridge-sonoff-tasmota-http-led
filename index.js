@@ -65,7 +65,7 @@ SonoffTasmotaHTTPLEDAccessory.prototype.getBrightness = function(callback) {
   	var lines = body.split("=");
   	var jsonreply = JSON.parse(lines[1])
   	that.log("Sonoff: " + this.hostname + " Get Brightness: " + jsonreply.Dimmer);
-  	callback(null, lines[1].Dimmer)
+  	callback(null, jsonreply.Dimmer)
   })
 }
 
