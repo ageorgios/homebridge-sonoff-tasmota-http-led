@@ -15,8 +15,13 @@ function SonoffTasmotaHTTPLEDAccessory(log, config) {
   this.name = config["name"]
   this.hostname = config["hostname"] || "sonoff";
 
-  this.service = new Service.Outlet(this.name);
+  var informationService = new Service.AccessoryInformation();
+  informationService
+    .setCharacteristic(Characteristic.Manufacturer, 'Sonoff Tasmota')
+    .setCharacteristic(Characteristic.Model, 'homebridge-sonoff-tasmota-http-led')
+    .setCharacteristic(Characteristic.SerialNumber, 'HTTP Serial Number')
 
+  this.service = new new Service.Lightbulb(this.name);
   this.service
     .getCharacteristic(Characteristic.On)
     .on('get', this.getState.bind(this))
