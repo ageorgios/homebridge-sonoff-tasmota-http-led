@@ -21,7 +21,7 @@ function SonoffTasmotaHTTPLEDAccessory(log, config) {
     .setCharacteristic(Characteristic.Model, 'homebridge-sonoff-tasmota-http-led')
     .setCharacteristic(Characteristic.SerialNumber, 'HTTP Serial Number')
 
-  this.service = new new Service.Lightbulb(this.name);
+  this.service = new Service.Lightbulb(this.name);
   this.service
     .getCharacteristic(Characteristic.On)
     .on('get', this.getState.bind(this))
