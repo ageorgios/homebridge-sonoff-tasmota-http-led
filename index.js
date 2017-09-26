@@ -103,7 +103,7 @@ SonoffTasmotaHTTPLEDAccessory.prototype.setColorTemperature = function(CT, callb
   var that = this
   request("http://" + this.hostname + "/cm?cmnd=CT%20" + CT, function(error, response, body) {
     if (error) return callback(error);
-    this.service.setCharacteristic(Characteristic.On)
+    that.service.setCharacteristic(Characteristic.On, 1)
   	var lines = body.split("=");
   	var jsonreply = JSON.parse(lines[1])
   	that.log("Sonoff LED: " + that.hostname + " Set Color Temperature to: " + CT);
