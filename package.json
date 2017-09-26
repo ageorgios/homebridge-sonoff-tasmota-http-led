@@ -1,6 +1,6 @@
 {
   "name": "homebridge-sonoff-tasmota-http-led",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "Control Sonoff LED with Tasmota firmware through Homebridge",
   "main": "index.js",
   "scripts": {
