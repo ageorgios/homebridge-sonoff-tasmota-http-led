@@ -30,8 +30,12 @@ function SonoffTasmotaHTTPLEDAccessory(log, config) {
     .addCharacteristic(new Characteristic.Brightness())
     .on('get', this.getBrightness.bind(this))
     .on('set', this.setBrightness.bind(this))
+  this.service
+    .addCharacteristic(new Characteristic.ColorTemperature())
+    .on('get', this.getColorTemperature.bind(this))
+    .on('set', this.setColorTemperature.bind(this))
 
-  this.log("Sonoff Tasmota HTTP Initialized")
+  this.log("Sonoff Tasmota HTTP LED Initialized")
 }
 
 SonoffTasmotaHTTPLEDAccessory.prototype.getState = function(callback) {
@@ -39,7 +43,7 @@ SonoffTasmotaHTTPLEDAccessory.prototype.getState = function(callback) {
   request("http://" + this.hostname + "/cm?cmnd=Power", function(error, response, body) {
     if (error) return callback(error);
   	var lines = body.split("\n");
-  	that.log("Sonoff: " + this.hostname + " Get State: " + lines[1]);
+  	that.log("Sonoff LED: " + that.hostname + " Get State: " + lines[1]);
   	if (lines[1] == "POWER = OFF") callback(null, 0)
   	else if (lines[1] == "POWER = ON") callback(null, 1)
   })
@@ -52,7 +56,7 @@ SonoffTasmotaHTTPLEDAccessory.prototype.setState = function(toggle, callback) {
   request("http://" + this.hostname + "/cm?cmnd=Power" + newstate, function(error, response, body) {
     if (error) return callback(error);
   	var lines = body.split("\n");
-  	that.log("Sonoff: " + this.hostname + " Set State to: " + lines[1]);
+  	that.log("Sonoff LED: " + that.hostname + " Set State to: " + lines[1]);
   	if (lines[1] == "POWER = OFF") callback()
   	else if (lines[1] == "POWER = ON") callback()
   })
@@ -64,7 +68,7 @@ SonoffTasmotaHTTPLEDAccessory.prototype.getBrightness = function(callback) {
     if (error) return callback(error);
   	var lines = body.split("=");
   	var jsonreply = JSON.parse(lines[1])
-  	that.log("Sonoff: " + this.hostname + " Get Brightness: " + jsonreply.Dimmer);
+  	that.log("Sonoff LED: " + that.hostname + " Get Brightness: " + jsonreply.Dimmer);
   	callback(null, jsonreply.Dimmer)
   })
 }
@@ -75,10 +79,36 @@ SonoffTasmotaHTTPLEDAccessory.prototype.setBrightness = function(brightness, cal
     if (error) return callback(error);
   	var lines = body.split("=");
   	var jsonreply = JSON.parse(lines[1])
-  	that.log("Sonoff: " + this.hostname + " Set Brightness to: " + jsonreply.Dimmer);
+  	that.log("Sonoff LED: " + that.hostname + " Set Brightness to: " + jsonreply.Dimmer);
   	if (jsonreply.Dimmer == brightness) callback()
   	else { 
-  	  that.log("Sonoff: " + this.hostname + " ERROR Setting Brightness to: " + brightness) 
+  	  that.log("Sonoff LED: " + that.hostname + " ERROR Setting Brightness to: " + brightness) 
+  	  callback()
+  	}
+  })
+}
+
+SonoffTasmotaHTTPLEDAccessory.prototype.getColorTemperature = function(callback) {
+  var that = this
+  request("http://" + this.hostname + "/cm?cmnd=CT", function(error, response, body) {
+    if (error) return callback(error);
+  	var lines = body.split("=");
+  	var jsonreply = JSON.parse(lines[1])
+  	that.log("Sonoff LED: " + that.hostname + " Get Color Temperature: " + jsonreply.CT);
+  	callback(null, jsonreply.CT)
+  })
+}
+
+SonoffTasmotaHTTPLEDAccessory.prototype.setColorTemperature = function(CT, callback) {
+  var that = this
+  request("http://" + this.hostname + "/cm?cmnd=CT%20" + CT, function(error, response, body) {
+    if (error) return callback(error);
+  	var lines = body.split("=");
+  	var jsonreply = JSON.parse(lines[1])
+  	that.log("Sonoff LED: " + that.hostname + " Set Color Temperature to: " + jsonreply.CT);
+  	if (jsonreply.Color != undefined) callback()
+  	else { 
+  	  that.log("Sonoff LED: " + that.hostname + " ERROR Setting Color Temperature to: " + CT) 
   	  callback()
   	}
   })
