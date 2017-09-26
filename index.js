@@ -101,6 +101,8 @@ SonoffTasmotaHTTPLEDAccessory.prototype.getColorTemperature = function(callback)
 
 SonoffTasmotaHTTPLEDAccessory.prototype.setColorTemperature = function(CT, callback) {
   var that = this
+  if (CT < 153) CT = 153
+  if (CT > 499) CT = 499
   request("http://" + this.hostname + "/cm?cmnd=CT%20" + CT, function(error, response, body) {
     if (error) return callback(error);
     that.service.setCharacteristic(Characteristic.On, 1)
